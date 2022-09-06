@@ -5,6 +5,7 @@ const initialState = {
   showPassword: false,
   error: false,
   errorMessage: '',
+  openModal: false,
 };
 
 export const uiSlice = createSlice({
@@ -23,8 +24,11 @@ export const uiSlice = createSlice({
     setErrorMessage: (state, action) => {
       state.errorMessage = action.payload;
     },
+    setOpenModal: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
-export const { setLoading, setShowPassword, setError, setErrorMessage } = uiSlice.actions;
+export const { setLoading, setShowPassword, setError, setErrorMessage, setOpenModal } = uiSlice.actions;
 export default uiSlice.reducer;

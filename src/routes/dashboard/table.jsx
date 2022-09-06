@@ -1,24 +1,31 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, FormControlLabel, IconButton, Icon } from '@mui/material';
+import { Box, FormControlLabel, IconButton, Icon, Button } from '@mui/material';
 
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { fetchPersonAll } from '../../slices/dataSlice';
 
-const MatEdit = ({ index }) => {
+import ModalPerson from './modal';
+
+const MatEdit = ({ data }) => {
+  const [open, setOpen] = useState(false);
+
   const handleEditClick = () => {
-    console.log(index);
+    setOpen(true);
   };
 
   return (
-    <FormControlLabel
-      control={
-        <IconButton color="secondary" aria-label="add an alarm" onClick={handleEditClick}>
-          <Icon sx={{ color: '#1976d2' }}>edit</Icon>
-        </IconButton>
-      }
-    />
+    <>
+      <ModalPerson open={open} setOpen={setOpen} text={'edit'} />
+      <FormControlLabel
+        control={
+          <IconButton color="secondary" aria-label="add an alarm" onClick={handleEditClick}>
+            <Icon sx={{ color: '#1976d2' }}>edit</Icon>
+          </IconButton>
+        }
+      />
+    </>
   );
 };
 
@@ -52,7 +59,7 @@ const columns = [
     renderCell: (params) => {
       return (
         <div className="d-flex justify-content-between align-items-center" style={{ cursor: 'pointer' }}>
-          <MatEdit index={params.row.id} />
+          <MatEdit data={params.row} />
         </div>
       );
     },
@@ -60,9 +67,15 @@ const columns = [
 ];
 
 function TablePerson() {
+  const [open, setOpen] = useState(false);
+
   const dispatch = useDispatch();
 
   const people = useSelector((state) => state.data.person, shallowEqual);
+
+  const handleclick = (event) => {
+    setOpen(true);
+  };
 
   useEffect(() => {
     dispatch(fetchPersonAll());
@@ -71,9 +84,15 @@ function TablePerson() {
   }, []);
 
   return (
-    <Box sx={{ width: '90%', margin: '0 auto', mt: 8, height: '70%', backgroundColor: 'white' }}>
-      <DataGrid rows={people} columns={columns} pageSize={6} rowsPerPageOptions={[6]} checkboxSelection />
-    </Box>
+    <>
+      <ModalPerson open={open} setOpen={setOpen} text={'create'} />
+      <Button variant="contained" sx={{ position: 'absolute', top: '90px', right: '80px' }} onClick={handleclick}>
+        Create Person
+      </Button>
+      <Box sx={{ width: '90%', margin: '0 auto', mt: 11, height: '70%', backgroundColor: 'white' }}>
+        <DataGrid rows={people} columns={columns} pageSize={8} rowsPerPageOptions={[5]} />
+      </Box>
+    </>
   );
 }
 

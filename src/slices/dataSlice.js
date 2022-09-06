@@ -20,9 +20,13 @@ export const dataSlice = createSlice({
     setPerson: (state, action) => {
       state.person = action.payload;
     },
+    addPerson: (state, action) => {
+      console.log(state.person);
+      state.person = action.payload;
+    },
   },
 });
 
-export const { setPerson } = dataSlice.actions;
+export const { setPerson, addPerson } = dataSlice.actions;
 
 export default dataSlice.reducer;

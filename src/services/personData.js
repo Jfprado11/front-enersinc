@@ -14,6 +14,23 @@ const getPerson = async () => {
   }
 };
 
+const postPerson = async ({ name, lastName, documentType, document, hobbie }) => {
+  const data = {
+    name,
+    last_name: lastName,
+    document_type: documentType,
+    document,
+    hobbie,
+  };
+
+  try {
+    const result = await fetchData(`${baseUrl}/person/`, 'post', data);
+    return result.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const fetchData = async (url, method, data = {}) => {
   const headers = {
     Accept: 'application/json',
@@ -37,4 +54,4 @@ const fetchData = async (url, method, data = {}) => {
   }
 };
 
-export { getPerson };
+export { getPerson, postPerson };
