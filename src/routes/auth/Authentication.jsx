@@ -1,17 +1,30 @@
-import { Box, Icon, TextField, Button, Typography, InputAdornment, IconButton, Snackbar, Alert } from '@mui/material';
+import {
+  Box,
+  Icon,
+  TextField,
+  Button,
+  Typography,
+  InputAdornment,
+  IconButton,
+  Snackbar,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 import { Navigate } from 'react-router-dom';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { setShowPassword, setError, setErrorMessage } from '../../slices/uiSlice';
+import { setShowPassword, setError, setErrorMessage, setLoading } from '../../slices/uiSlice';
 import { setUserInfo } from '../../slices/userSlice';
 
 // Services
 import { login } from '../../services/authApi';
+import { Container } from '@mui/system';
 
 function Authentication({ isLoggin }) {
   const dispatch = useDispatch();
   const showPassword = useSelector((state) => state.ui.showPassword);
+  const loading = useSelector((state) => state.ui.loading);
   const error = useSelector((state) => state.ui.error);
   const errorMessage = useSelector((state) => state.ui.errorMessage);
 
@@ -22,6 +35,7 @@ function Authentication({ isLoggin }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    dispatch(setLoading(true));
     const username = event.target.username.value;
     const password = event.target.password.value;
     login(username, password)
@@ -31,16 +45,25 @@ function Authentication({ isLoggin }) {
         }
       })
       .catch((err) => {
+        dispatch(setLoading(false));
         dispatch(setError(true));
         dispatch(setErrorMessage(err.message));
       })
       .finally(() => {
+        dispatch(setLoading(false));
         setTimeout(() => {
           dispatch(setError(false));
           dispatch(setErrorMessage(''));
         }, 3000);
       });
   };
+
+  if (loading)
+    return (
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress color="primary" />
+      </Container>
+    );
 
   return (
     <Box

@@ -17,16 +17,26 @@ export const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
+    addPerson: (state, action) => {
+      console.log(action.payload);
+      state.person.push(action.payload);
+    },
     setPerson: (state, action) => {
       state.person = action.payload;
     },
-    addPerson: (state, action) => {
-      console.log(state.person);
-      state.person = action.payload;
+
+    updatePerson: (state, action) => {
+      const updatedPeople = state.person.filter((person) => person.id !== action.payload.id);
+      state.person = [...updatedPeople, action.payload];
+    },
+
+    destroyPerson: (state, action) => {
+      console.log(action.payload);
+      state.person = state.person.filter((person) => person.id !== action.payload.id);
     },
   },
 });
 
-export const { setPerson, addPerson } = dataSlice.actions;
+export const { setPerson, addPerson, updatePerson, destroyPerson } = dataSlice.actions;
 
 export default dataSlice.reducer;

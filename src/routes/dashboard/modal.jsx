@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { TextField, Snackbar, Alert } from '@mui/material';
+import { TextField, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { postPerson } from '../../services/personData';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPerson } from '../../slices/dataSlice';
@@ -22,10 +22,10 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, setOpen, text }) {
+function BasicModal({ open, setOpen, text }) {
   const dispatch = useDispatch();
 
-  const people = useSelector((state) => state.data.person);
+  // const people = useSelector((state) => state.data.person);
   const error = useSelector((state) => state.ui.error);
   const errorMessage = useSelector((state) => state.ui.errorMessage);
 
@@ -38,10 +38,18 @@ export default function BasicModal({ open, setOpen, text }) {
     const documentType = event.target.document_type.value;
     const document = event.target.document.value;
     const hobbie = event.target.hobbie.value;
+    if (!name || !lastName || !documentType || !document || !hobbie) {
+      dispatch(setError(true));
+      dispatch(setErrorMessage('some fields are not fill yet'));
+      setTimeout(() => {
+        dispatch(setError(false));
+        dispatch(setErrorMessage(''));
+      }, 2000);
+      return;
+    }
     postPerson({ name, lastName, documentType, document, hobbie })
       .then((res) => {
-        const newPeople = [...people, res];
-        dispatch(addPerson(newPeople));
+        dispatch(addPerson(res));
         setOpen(false);
       })
       .catch((err) => {
@@ -76,10 +84,25 @@ export default function BasicModal({ open, setOpen, text }) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Person
           </Typography>
-          <TextField margin="normal" fullWidth id="name" label="Name" name="name" />
-          <TextField margin="normal" fullWidth id="last_name" label="Last Name" name="last_name" />
-          <TextField margin="normal" fullWidth id="document_type" label="Document Type" name="document_type" />
-          <TextField margin="normal" fullWidth id="document" label="Document" name="document" />
+          <TextField margin="normal" fullWidth id="name" label="Name" name="name" autoComplete="given-name" />
+          <TextField
+            margin="normal"
+            fullWidth
+            id="last_name"
+            label="Last Name"
+            name="last_name"
+            autoComplete="family-name"
+          />
+          <FormControl fullWidth sx={{ mt: 1 }}>
+            <InputLabel id="document_type">Document Type</InputLabel>
+            <Select labelId="document_type" id="document_type" label="document_type" name="document_type">
+              <MenuItem value="CC">Cedula ciudanida</MenuItem>
+              <MenuItem value="TI">Tarjeta identidad</MenuItem>
+              <MenuItem value="NUIP">Registro civil</MenuItem>
+              <MenuItem value="CE">Ceduala extranjera</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField margin="normal" fullWidth id="document" label="Document" name="document" type="number" />
           <TextField margin="normal" fullWidth id="hobbie" label="Hobbie" name="hobbie" />
           <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
             {text}
@@ -89,3 +112,4 @@ export default function BasicModal({ open, setOpen, text }) {
     </div>
   );
 }
+export default BasicModal;

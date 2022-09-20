@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authenticationManager from './jwtAuth';
 
-const baseUrl = 'http://localhost:8000/api';
+const baseUrl = 'https://rest-api-django-2zdc5jbehq-ue.a.run.app/api';
 
 // authethicates the user for entering the dashboard
 const login = async (username, password) => {
@@ -21,7 +21,6 @@ const login = async (username, password) => {
 // send a request to refresh the token
 const refresh = async (refreshToken) => {
   try {
-    console.log(refreshToken);
     const result = await sendData(`${baseUrl}/token/refresh/`, { refresh: refreshToken });
     return { ...result.data, refresh: refreshToken };
   } catch (error) {

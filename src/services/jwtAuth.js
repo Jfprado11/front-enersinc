@@ -32,7 +32,7 @@ class AuthenticationManager {
       false
     );
 
-    setInterval(() => this.checkTokenExpiry(this), 600000);
+    setInterval(() => this.checkTokenExpiry(this), 300000);
   }
 
   tokenUpdated(newToken) {
